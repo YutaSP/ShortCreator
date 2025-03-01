@@ -1,0 +1,68 @@
+# Ignore .NET build artifacts
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.vs/
+*.user
+*.suo
+*.csproj.user
+
+# Ignore .NET environment files
+.env
+.env.local
+appsettings*.json
+
+# Ignore Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Ignore frontend build files
+dist/
+build/
+.out/
+*.cache
+
+# Ignore TypeScript build artifacts
+*.tsbuildinfo
+
+# Ignore React and frontend framework specific files
+.vite/
+.next/
+.nuxt/
+.angular/
+.svelte-kit/
+*.parcel-cache
+
+# Ignore logs and temporary files
+logs/
+*.log
+*.out
+*.pid
+*.seed
+*.lock
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore editor-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore Python virtual environments
+venv/
+__pycache__/
+*.pyc
+
+# Ignore Java dependencies
+target/
+*.class
+
+# Ignore macOS system files
+.DS_Store
