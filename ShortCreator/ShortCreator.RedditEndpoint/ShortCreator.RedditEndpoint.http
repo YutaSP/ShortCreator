@@ -1,0 +1,6 @@
+@ShortCreator.RedditEndpoint_HostAddress = http://localhost:5034
+
+GET {{ShortCreator.RedditEndpoint_HostAddress}}/RedditEndpoint/
+Accept: application/json
+
+###
