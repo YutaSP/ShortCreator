@@ -66,3 +66,7 @@ target/
 
 # Ignore macOS system files
 .DS_Store
+
+# Ignore Audio and video files
+*.mp3
+*.mp4
