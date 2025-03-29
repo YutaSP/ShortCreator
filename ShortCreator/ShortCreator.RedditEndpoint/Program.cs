@@ -1,8 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using ShortCreator.RedditEndpoint.Data;
 using ShortCreator.RedditEndpoint.Models;
+using ShortCreator.RedditEndpoint.Service;
+using ShortCreator.YoutubeEndpoint.Common;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +29,11 @@ builder.Services.AddProblemDetails(options =>
 //if moving to scoped or transient, must add auth token service to ensure token is somehting retained through out app but calls itself shoudl be transient
 builder.Services.AddSingleton<IRedditApiService, RedditApiService>();
 
+builder.Services.AddDbContext<RedditDbContext>(option =>
+{
+    option.UseSqlServer(builder.Configuration.Required("DbConnectionString"));
+});
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
@@ -34,25 +43,11 @@ app.MapDefaultEndpoints();
 app.UseHttpsRedirection();
 
 
-app.MapGet("/redditEndpoint", async (ILogger<Program> logger) =>
+app.MapGet("/redditEndpoint", async (ILogger<Program> logger, RedditDbContext dbContext) =>
 {
-    //below is test rewrite to get data from db for story to be consumed by other apps.
-    var agent = "ShortMakerScript/1.0 (Windows 11) by /u/Pretty_Will_1754";
-    var subreddit = "COD";
     try
     {
-        using (HttpClient client = new HttpClient())
-        {
-            client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", agent);
-            string url = $"https://www.reddit.com/r/{subreddit}/about.json";
-            var response = await client.GetStringAsync(url);
-
-            // Deserialize the JSON response into an object
-            var subredditInfo = JsonConvert.DeserializeObject<object>(response);
-            logger.LogInformation("Information received {response}", response);
-            // Return the data from the response
-            return Results.Ok(subredditInfo);
-        }
+        return Results.Ok(await dbContext.RedditStories.Take(1).SingleOrDefaultAsync());
     }
     catch (Exception ex)
     {
@@ -66,32 +61,84 @@ app.MapGet("/redditEndpoint", async (ILogger<Program> logger) =>
 });
 
 app.MapPost(
-    "redditEndpoint", 
-    async (PostItem postItem, ILogger<Program> logger, IRedditApiService redditApiService) =>
+    "/redditEndpoint", 
+    async (PostItem postItem, ILogger<Program> logger, IRedditApiService redditApiService, RedditDbContext dbContext) =>
 {
-    var validationConext = new ValidationContext(postItem);
-    var validationResult = new List<ValidationResult>();
-    var isValid = Validator.TryValidateObject(postItem, validationConext, validationResult, true);
-
-    if (!isValid)
+    try
     {
-        string resultString = string.Empty;
-        foreach(var validation in validationResult)
+        //make sure the category is not capitalized
+        var validationConext = new ValidationContext(postItem);
+        var validationResult = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(postItem, validationConext, validationResult, true);
+
+        if (!isValid)
         {
-            resultString += string.Format("{0}; ", validation.ErrorMessage);
+            string resultString = string.Empty;
+            foreach (var validation in validationResult)
+            {
+                resultString += string.Format("{0}; ", validation.ErrorMessage);
+            }
+
+            throw new ValidationException(resultString);
         }
 
-        return Results.Problem(
-                statusCode: StatusCodes.Status400BadRequest,
-                type: "Bad Request",
-                detail: resultString
-            );
+        var post = await redditApiService.GetPost(postItem.TargetSubreddit.ToString(), postItem.SearchType.ToString());
+
+        //should make mapper if data handling is bigger than this
+        var story = new RedditStory
+        {
+            Id = post.ID,
+            Title = post.Title,
+            Story = post.StoryText
+        };
+        //insert said post
+        dbContext.RedditStories.Add(story);
+        await dbContext.SaveChangesAsync();
+
+        return Results.Ok(story.Id);
     }
+    catch(ValidationException ex)
+    {
+        logger.LogInformation(ex.Message);
 
-    //make sure the category is not capitalized
-    var post = await redditApiService.GetPost(postItem.TargetSubreddit.ToString(), postItem.SearchType.ToString());
+        return Results.Problem(
+            statusCode: StatusCodes.Status400BadRequest,
+            type: "Bad Request",
+            detail: ex.Message
+        );
+    }
+    catch (Exception ex)
+    {
+        logger.LogInformation(ex.Message);
 
-    return Results.Ok();
+        return Results.Problem(
+            statusCode: StatusCodes.Status400BadRequest,
+            type: "Bad Request",
+            detail: ex.Message
+        );
+    }
+});
+
+app.MapDelete("/redditEndpoint/{id}", async (int id, ILogger<Program> logger, RedditDbContext dbContext) =>
+{
+    try
+    {
+        var post = await dbContext.RedditStories.SingleAsync(e => e.Id.Equals(id));
+        dbContext.Remove(post);
+        await dbContext.SaveChangesAsync();
+
+        return Results.Ok(id);
+    }
+    catch (Exception ex)
+    {
+        logger.LogInformation(ex.Message);
+
+        return Results.Problem(
+            statusCode: StatusCodes.Status400BadRequest,
+            type: "Bad Request",
+            detail: ex.Message
+        );
+    }
 });
 
 app.Run();

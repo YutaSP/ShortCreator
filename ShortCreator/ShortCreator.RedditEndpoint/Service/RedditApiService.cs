@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using ShortCreator.RedditEndpoint.Models;
 using ShortCreator.YoutubeEndpoint.Common;
 
-namespace ShortCreator.RedditEndpoint.Data
+namespace ShortCreator.RedditEndpoint.Service
 {
     public class RedditApiService : IRedditApiService
     {

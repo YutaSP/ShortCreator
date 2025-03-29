@@ -1,6 +1,6 @@
 ﻿using ShortCreator.RedditEndpoint.Models;
 
-namespace ShortCreator.RedditEndpoint.Data
+namespace ShortCreator.RedditEndpoint.Service
 {
     public interface IRedditApiService
     {
