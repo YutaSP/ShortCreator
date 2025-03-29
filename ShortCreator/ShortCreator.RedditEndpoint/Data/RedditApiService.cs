@@ -41,6 +41,7 @@ namespace ShortCreator.RedditEndpoint.Data
                     using(HttpClient client = new HttpClient())
                     {
                         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken.Token);
+
                         var agent = "ShortMaker/1.0";
                         client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", agent);
 
@@ -64,8 +65,18 @@ namespace ShortCreator.RedditEndpoint.Data
                         {
                             throw new Exception("Unable to deserialize content from the reddit post");
                         }
+
                         // Get the first Reddit post
                         var firstPost = root.Data.Children[1].Data;
+
+                        // Check if post is an image or video and skip it
+                        if (IsMediaPost(firstPost.PostHint, firstPost.IsVideo, firstPost.Url))
+                        {
+                            //the post should be skipped
+                            _logger.LogInformation("The post retrieved was skipped. Reason: Media type not story");
+                            return null;
+                        }
+
 
                         string cleanedText = firstPost.StoryText.Replace("\\n", " ").Replace("\\\"", "\"");
 
@@ -149,6 +160,18 @@ namespace ShortCreator.RedditEndpoint.Data
                 _logger.LogInformation(ex.Message);
             }            
         }
+        private bool IsMediaPost(string postHint, bool isVideo, string url)
+        {
+            // Exclude posts that are images or videos
+            return postHint == "image" || postHint == "hosted:video" || isVideo || IsMediaUrl(url);
+        }
 
+        private bool IsMediaUrl(string url)
+        {
+            // Check if URL links directly to an image or video file
+            return url.EndsWith(".jpg") || url.EndsWith(".png") || url.EndsWith(".gif") ||
+                   url.EndsWith(".mp4") || url.EndsWith(".webm") || url.Contains("gfycat.com") ||
+                   url.Contains("imgur.com") && !url.Contains("/a/"); // Exclude Imgur album links
+        }
     }
 }
