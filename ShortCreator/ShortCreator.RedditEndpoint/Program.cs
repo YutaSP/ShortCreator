@@ -1,6 +1,8 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http.Features;
 using Newtonsoft.Json;
 using ShortCreator.RedditEndpoint.Data;
+using ShortCreator.RedditEndpoint.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,8 @@ builder.Services.AddProblemDetails(options =>
     };
 });
 // Add services to the container.
-
+//below is describe as singleton but should be scoped or transient.
+//if moving to scoped or transient, must add auth token service to ensure token is somehting retained through out app but calls itself shoudl be transient
 builder.Services.AddSingleton<IRedditApiService, RedditApiService>();
 
 var app = builder.Build();
@@ -33,6 +36,7 @@ app.UseHttpsRedirection();
 
 app.MapGet("/redditEndpoint", async (ILogger<Program> logger) =>
 {
+    //below is test rewrite to get data from db for story to be consumed by other apps.
     var agent = "ShortMakerScript/1.0 (Windows 11) by /u/Pretty_Will_1754";
     var subreddit = "COD";
     try
@@ -61,10 +65,33 @@ app.MapGet("/redditEndpoint", async (ILogger<Program> logger) =>
     }
 });
 
-app.MapPost("redditEndpoint", async (ILogger<Program> Logger, IRedditApiService redditApiService) =>
+app.MapPost(
+    "redditEndpoint", 
+    async (PostItem postItem, ILogger<Program> logger, IRedditApiService redditApiService) =>
 {
+    var validationConext = new ValidationContext(postItem);
+    var validationResult = new List<ValidationResult>();
+    var isValid = Validator.TryValidateObject(postItem, validationConext, validationResult, true);
+
+    if (!isValid)
+    {
+        string resultString = string.Empty;
+        foreach(var validation in validationResult)
+        {
+            resultString += string.Format("{0}; ", validation.ErrorMessage);
+        }
+
+        return Results.Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                type: "Bad Request",
+                detail: resultString
+            );
+    }
+
     //make sure the category is not capitalized
-    return await redditApiService.GetPost("AmItheAsshole", "hot");
+    var post = await redditApiService.GetPost(postItem.TargetSubreddit.ToString(), postItem.SearchType.ToString());
+
+    return Results.Ok();
 });
 
 app.Run();

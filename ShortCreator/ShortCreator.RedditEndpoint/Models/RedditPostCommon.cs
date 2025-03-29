@@ -11,10 +11,10 @@ namespace ShortCreator.RedditEndpoint.Models
     public class Data
     {
         [JsonProperty("children")]
-        public List<RedditPost> Children { get; set; }
+        public List<RedditPostItem> Children { get; set; }
     }
 
-    public class RedditPost
+    public class RedditPostItem
     {
         [JsonProperty("data")]
         public RedditPostDto Data { get; set; }

@@ -5,7 +5,10 @@ namespace ShortCreator.RedditEndpoint.Models
     {
         Nicegirls,
         AmItheAsshole,
-
+        AmIOverreacting,
+        confession,
+        stories_and_confessions,
+        pettyrevenge
     }
     public enum RedditPostSearchEnums
     {
