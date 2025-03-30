@@ -24,6 +24,8 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Respository\" />
   </ItemGroup>
 
 </Project>

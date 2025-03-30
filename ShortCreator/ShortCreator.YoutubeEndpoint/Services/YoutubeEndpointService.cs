@@ -1,4 +1,4 @@
-﻿using ShortCreator.YoutubeEndpoint.IServices;
+﻿using ShortCreator.YoutubeEndpoint.Interfaces;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Upload;
@@ -39,6 +39,11 @@ namespace ShortCreator.YoutubeEndpoint.Services
                 vids.Add(new YoutubeTargetIdDto(res));
             }
             return vids;
+        }
+
+        public Task<bool> UploadVideo()
+        {
+            throw new NotImplementedException();
         }
     }
 }

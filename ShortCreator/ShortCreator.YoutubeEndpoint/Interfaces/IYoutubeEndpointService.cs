@@ -1,6 +1,6 @@
 ﻿using ShortCreator.YoutubeEndpoint.Models;
 
-namespace ShortCreator.YoutubeEndpoint.IServices
+namespace ShortCreator.YoutubeEndpoint.Interfaces
 {
     public interface IYoutubeEndpointService
     {

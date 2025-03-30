@@ -1,5 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using ShortCreator.YoutubeEndpoint.Common;
-using ShortCreator.YoutubeEndpoint.IServices;
+using ShortCreator.YoutubeEndpoint.Data;
+using ShortCreator.YoutubeEndpoint.Interfaces;
 using ShortCreator.YoutubeEndpoint.Models;
 using ShortCreator.YoutubeEndpoint.Services;
 
@@ -7,6 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.Services.AddTransient<IYoutubeEndpointService, YoutubeEndpointService>();
+
+builder.Services.AddDbContext<YoutubeDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.Required("DbConnectionString"));
+});
 
 // Add services to the container.
 

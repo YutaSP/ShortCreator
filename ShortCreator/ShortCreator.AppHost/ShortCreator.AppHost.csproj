@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ShortCreator.ApiService\ShortCreator.ApiService.csproj" />
     <ProjectReference Include="..\ShortCreator.RedditEndpoint\ShortCreator.RedditEndpoint.csproj" />
+    <ProjectReference Include="..\ShortCreator.VideoCreatorEndpoint\ShortCreator.VideoCreatorEndpoint.csproj" />
     <ProjectReference Include="..\ShortCreator.YoutubeEndpoint\ShortCreator.YoutubeEndpoint.csproj" />
   </ItemGroup>
 

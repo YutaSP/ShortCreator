@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option csharp_namespace = "ShortCreator.VideoCreatorEndpoint.Protos";
+
+service PyEndpointService {
+	rpc MakeVideo (VideoRequest) returns (CreationValidation);
+}
+
+message VideoRequest{
+	string VideoId = 1,
+
+}

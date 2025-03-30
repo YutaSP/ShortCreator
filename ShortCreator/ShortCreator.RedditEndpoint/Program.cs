@@ -34,7 +34,12 @@ app.MapGet("/redditEndpoint", async (ILogger<Program> logger, RedditDbContext db
 {
     try
     {
-        return Results.Ok(await dbContext.RedditStories.Take(1).SingleOrDefaultAsync());
+        var story = await dbContext.RedditStories.Take(1).SingleOrDefaultAsync();
+
+        if (story == null)
+            throw new Exception("No reddit story to provide");
+
+        return Results.Ok(story);
     }
     catch (Exception ex)
     {

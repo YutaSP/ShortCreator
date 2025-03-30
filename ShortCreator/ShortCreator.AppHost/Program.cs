@@ -14,4 +14,8 @@ builder.AddProject<Projects.ShortCreator_YoutubeEndpoint>("shortcreator-youtubee
 
 builder.AddProject<Projects.ShortCreator_RedditEndpoint>("shortcreator-redditendpoint");
 
+builder.AddProject<Projects.ShortCreator_Backend>("shortcreator-backend");
+
+builder.AddProject<Projects.ShortCreator_VideoCreatorEndpoint>("shortcreator-videocreatorendpoint");
+
 builder.Build().Run();

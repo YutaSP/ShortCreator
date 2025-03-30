@@ -6,11 +6,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShortCreator.AppHost", "Sho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShortCreator.ServiceDefaults", "ShortCreator.ServiceDefaults\ShortCreator.ServiceDefaults.csproj", "{1DA239BE-48EB-3246-8DF7-1B75B00BC25B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShortCreator.ApiService", "ShortCreator.ApiService\ShortCreator.ApiService.csproj", "{8102DBB2-107B-11BB-2CF7-BDBFF2E62227}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShortCreator.YoutubeEndpoint", "ShortCreator.YoutubeEndpoint\ShortCreator.YoutubeEndpoint.csproj", "{489BBDA5-4D0F-1230-6A6D-4E318AEF429E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShortCreator.RedditEndpoint", "ShortCreator.RedditEndpoint\ShortCreator.RedditEndpoint.csproj", "{7C87D44A-86A2-4FB0-1CB0-2237059FC31F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShortCreator.VideoCreatorEndpoint", "ShortCreator.VideoCreatorEndpoint\ShortCreator.VideoCreatorEndpoint.csproj", "{94761AC4-FE80-2963-6724-E21305DDCA2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,10 +26,6 @@ Global
 		{1DA239BE-48EB-3246-8DF7-1B75B00BC25B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DA239BE-48EB-3246-8DF7-1B75B00BC25B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DA239BE-48EB-3246-8DF7-1B75B00BC25B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8102DBB2-107B-11BB-2CF7-BDBFF2E62227}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8102DBB2-107B-11BB-2CF7-BDBFF2E62227}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8102DBB2-107B-11BB-2CF7-BDBFF2E62227}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8102DBB2-107B-11BB-2CF7-BDBFF2E62227}.Release|Any CPU.Build.0 = Release|Any CPU
 		{489BBDA5-4D0F-1230-6A6D-4E318AEF429E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{489BBDA5-4D0F-1230-6A6D-4E318AEF429E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{489BBDA5-4D0F-1230-6A6D-4E318AEF429E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -38,6 +34,10 @@ Global
 		{7C87D44A-86A2-4FB0-1CB0-2237059FC31F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C87D44A-86A2-4FB0-1CB0-2237059FC31F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C87D44A-86A2-4FB0-1CB0-2237059FC31F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94761AC4-FE80-2963-6724-E21305DDCA2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94761AC4-FE80-2963-6724-E21305DDCA2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94761AC4-FE80-2963-6724-E21305DDCA2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94761AC4-FE80-2963-6724-E21305DDCA2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
