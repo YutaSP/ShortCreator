@@ -68,6 +68,19 @@ public static class Extensions
 
         builder.AddOpenTelemetryExporters();
 
+        //added myself, not sure if this is necessary but this shoudl be added to any http server,
+        //idk how this will translate for gRPC.cross that bridge when i get to it.
+        //adding proper response detail for endpoint, possibly move this up to service defaults
+        builder.Services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = context =>
+            {
+                context.ProblemDetails.Instance = $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
+                context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+                var activity = context.HttpContext.Features.Get<IHttpActivityFeature>()?.Activity;
+                context.ProblemDetails.Extensions.TryAdd("traceId", activity?.Id);
+            };
+        });
         return builder;
     }
 
