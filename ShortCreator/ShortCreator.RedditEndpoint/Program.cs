@@ -127,7 +127,7 @@ app.MapDelete("/redditEndpoint/{id}", async (int id, ILogger<Program> logger, Re
         );
     }
 });
-app.MapPut("/redditEndpoint", async (PostItem item, ILogger<Program> logger, RedditDbContext dbContext) =>
+app.MapPut("/redditEndpoint", async (PutItem item, ILogger<Program> logger, RedditDbContext dbContext) =>
 {
     try
     {
@@ -147,9 +147,27 @@ app.MapPut("/redditEndpoint", async (PostItem item, ILogger<Program> logger, Red
             throw new ValidationException(resultString);
         }
 
-        //var usedStory = new 
+        var usedStory = new RedditUsedStory
+        {
+            Id = item.PostId,
+            SubredditEnum = (int?)item.Subreddit,
+            CategoryEnum = (int?)item.SearchCategory,
+        };
 
-        return Results.Ok();
+        var updateTarget = await dbContext.RedditUsedStories.FirstOrDefaultAsync(x => x.SubredditEnum == usedStory.SubredditEnum);
+
+        if (updateTarget != null)
+        {
+            updateTarget.Id = usedStory.Id;
+            updateTarget.CategoryEnum = usedStory.CategoryEnum;
+            dbContext.Update(updateTarget);
+
+            return Results.Ok(await dbContext.SaveChangesAsync());
+        }
+
+        await dbContext.AddAsync(usedStory);
+
+        return Results.Ok(await dbContext.SaveChangesAsync());
     }
     catch (ValidationException ex)
     {
